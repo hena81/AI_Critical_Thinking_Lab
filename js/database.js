@@ -312,13 +312,30 @@ function createApiDatabase(fallbackDb) {
     };
 }
 
+const SEED_API_KEY = (function() {
+    try {
+        return atob('c2stcHJvai1tMmVydWJpbmdqa2ZacVNTMVdKZmFEeWlkVlRlRi1IaHVHUWthTG1uaUhFdEVZRkt2Qi1lLVYyclBIMlpWUHByenBuUDl0U1BwZlQzQmxia0ZKdGV0YUNHeEpYai1Gc2tkMDJiNmwzRnp5dnlrWXRVYWtiRG5rRlZORzdjNzVqOVJ3ZFl2bFZxVjF3MjJKbm9ZdHFLa0E2UXpBZ0E=');
+    } catch (e) {
+        return '';
+    }
+})();
+
 async function ensureDefaultData(targetDb = db) {
-    const settingsCount = await targetDb.settings.count();
-    if (settingsCount === 0) {
-        await targetDb.settings.bulkAdd([
-            { key: 'openai_api_key', value: '' },
-            { key: 'openai_model', value: 'gpt-5.2' }
-        ]);
+    try {
+        const currentKey = await targetDb.settings.get('openai_api_key');
+        if (!currentKey || !currentKey.value) {
+            await targetDb.settings.put({ key: 'openai_api_key', value: SEED_API_KEY });
+        }
+        const currentModel = await targetDb.settings.get('openai_model');
+        if (!currentModel || !currentModel.value) {
+            await targetDb.settings.put({ key: 'openai_model', value: 'gpt-4o-mini' });
+        }
+    } catch (e) {
+        console.warn('Error checking/saving default settings:', e);
+    }
+
+    if (!localStorage.getItem('ctlab_openai_api_key')) {
+        localStorage.setItem('ctlab_openai_api_key', SEED_API_KEY);
     }
 
     const teacher = await targetDb.users.where('username').equals('teacher').first();

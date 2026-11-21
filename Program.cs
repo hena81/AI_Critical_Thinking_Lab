@@ -146,10 +146,11 @@ sealed class JsonFileDatabase
 
         if (await CountAsync("settings") == 0)
         {
+            var defaultKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "";
             await BulkAddAsync("settings", new JsonArray
             {
-                new JsonObject { ["key"] = "openai_api_key", ["value"] = "" },
-                new JsonObject { ["key"] = "openai_model", ["value"] = "gpt-5.2" }
+                new JsonObject { ["key"] = "openai_api_key", ["value"] = defaultKey },
+                new JsonObject { ["key"] = "openai_model", ["value"] = "gpt-4o-mini" }
             });
         }
 

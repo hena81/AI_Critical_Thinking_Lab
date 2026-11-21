@@ -1684,6 +1684,8 @@ const App = (() => {
                                     <label for="setModelSelect">${isAr ? 'نموذج الذكاء الاصطناعي (Model)' : 'AI Model Target'}</label>
                                     <div class="input-wrapper">
                                         <select id="setModelSelect">
+                                             <option value="gpt-4o-mini">gpt-4o-mini (سريع وموصى به)</option>
+                                             <option value="gpt-4o">gpt-4o (أعلى دقة)</option>
                                              <option value="gpt-5.2">gpt-5.2</option>
                                         </select>
                                     </div>
@@ -1816,6 +1818,14 @@ const App = (() => {
             tabOverview.classList.remove('active'); tabStudents.classList.add('active'); tabSettings.classList.remove('active');
             paneOverview.classList.add('hidden'); paneStudents.classList.remove('hidden'); paneSettings.classList.add('hidden');
         });
+
+        // Prefill Settings input fields immediately on dashboard load
+        AIEngine.getSettings().then(dataSettings => {
+            const keyEl = document.getElementById('setApiKey');
+            const modelEl = document.getElementById('setModelSelect');
+            if (keyEl && dataSettings.apiKey) keyEl.value = dataSettings.apiKey;
+            if (modelEl && dataSettings.model) modelEl.value = dataSettings.model;
+        }).catch(err => console.warn('Could not prefill settings:', err));
 
         tabSettings.addEventListener('click', async () => {
             tabOverview.classList.remove('active'); tabStudents.classList.remove('active'); tabSettings.classList.add('active');

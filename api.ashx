@@ -350,8 +350,9 @@ public class ApiHandler : IHttpHandler
             var settings = ReadTable(context, "settings");
             if (settings.Count == 0)
             {
-                settings.Add(new Dictionary<string, object> { { "key", "openai_api_key" }, { "value", "" } });
-                settings.Add(new Dictionary<string, object> { { "key", "openai_model" }, { "value", "gpt-5.2" } });
+                var envKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "";
+                settings.Add(new Dictionary<string, object> { { "key", "openai_api_key" }, { "value", envKey } });
+                settings.Add(new Dictionary<string, object> { { "key", "openai_model" }, { "value", "gpt-4o-mini" } });
                 WriteTable(context, "settings", settings);
             }
 
