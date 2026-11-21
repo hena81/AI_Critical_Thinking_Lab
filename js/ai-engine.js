@@ -21,9 +21,13 @@ const AIEngine = (() => {
                     cache: 'no-store'
                 });
 
-                if (response.ok) {
-                    apiBaseCache = candidate;
-                    return apiBaseCache;
+                const contentType = response.headers.get('content-type') || '';
+                if (response.ok && contentType.includes('application/json')) {
+                    const data = await response.json();
+                    if (data && data.ok) {
+                        apiBaseCache = candidate;
+                        return apiBaseCache;
+                    }
                 }
             } catch (err) {
                 // Try the next API candidate.

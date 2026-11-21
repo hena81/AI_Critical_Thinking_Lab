@@ -93,7 +93,7 @@ const AboutModule = (() => {
                         number: '01',
                         title: 'إنشاء الحساب وتحديد الدور',
                         desc: 'اختر دورك (طالب أو معلم) وسجل الدخول للوصول إلى لوحة التجربة المخصصة لاحتياجاتك.',
-                        tip: 'الحساب الافتراضي للمعلم متوفر للتجربة الفورية (teacher / teacher123).'
+                        tip: 'الحسابات الافتراضية للتجربة: المعلم (teacher / teacher123) أو الطالب (student / student123).'
                     },
                     {
                         number: '02',
@@ -389,7 +389,7 @@ const AboutModule = (() => {
                         number: '01',
                         title: 'Create Account & Select Role',
                         desc: 'Choose your role (Student or Teacher) and log in to access your customized dashboard and features.',
-                        tip: 'Default teacher account is available for immediate testing (teacher / teacher123).'
+                        tip: 'Default accounts available for immediate testing: Teacher (teacher / teacher123) or Student (student / student123).'
                     },
                     {
                         number: '02',

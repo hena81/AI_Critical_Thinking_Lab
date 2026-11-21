@@ -166,6 +166,20 @@ sealed class JsonFileDatabase
                 ["createdAt"] = DateTimeOffset.UtcNow.ToString("O")
             });
         }
+
+        var student = await FirstAsync("users", "username", "student");
+        if (student is null)
+        {
+            await AddAsync("users", new JsonObject
+            {
+                ["username"] = "student",
+                ["passwordHash"] = Sha256Hex("student123"),
+                ["role"] = "student",
+                ["displayName"] = "طالب تجريبي",
+                ["lang"] = "ar",
+                ["createdAt"] = DateTimeOffset.UtcNow.ToString("O")
+            });
+        }
     }
 
     public Task<int> CountAsync(string table) => WithLockAsync(table, async () => (await ReadAsync(table)).Count);

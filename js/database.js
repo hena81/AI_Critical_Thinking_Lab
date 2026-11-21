@@ -144,10 +144,14 @@ function createApiDatabase(fallbackDb) {
                     cache: 'no-store'
                 });
 
-                if (response.ok) {
-                    apiBase = candidate;
-                    availability = true;
-                    return availability;
+                const contentType = response.headers.get('content-type') || '';
+                if (response.ok && contentType.includes('application/json')) {
+                    const data = await response.json();
+                    if (data && data.ok) {
+                        apiBase = candidate;
+                        availability = true;
+                        return availability;
+                    }
                 }
             } catch (err) {
                 // Try the next candidate, then fall back to IndexedDB.
@@ -180,7 +184,13 @@ function createApiDatabase(fallbackDb) {
 
     async function remoteOrLocal(remoteAction, localAction) {
         if (await isApiAvailable()) {
-            return remoteAction();
+            try {
+                return await remoteAction();
+            } catch (err) {
+                console.warn('Remote API action failed, falling back to local database:', err);
+                availability = false;
+                return localAction();
+            }
         }
 
         return localAction();
@@ -319,6 +329,19 @@ async function ensureDefaultData(targetDb = db) {
             passwordHash: teacherPasswordHash,
             role: 'teacher',
             displayName: 'المعلم المشرف',
+            lang: 'ar',
+            createdAt: new Date().toISOString()
+        });
+    }
+
+    const student = await targetDb.users.where('username').equals('student').first();
+    if (!student) {
+        const studentPasswordHash = await hashPassword('student123');
+        await targetDb.users.add({
+            username: 'student',
+            passwordHash: studentPasswordHash,
+            role: 'student',
+            displayName: 'طالب تجريبي',
             lang: 'ar',
             createdAt: new Date().toISOString()
         });

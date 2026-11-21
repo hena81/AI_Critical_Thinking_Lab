@@ -370,6 +370,21 @@ public class ApiHandler : IHttpHandler
                 });
                 WriteTable(context, "users", users);
             }
+
+            if (!users.Any(user => Matches(user, "username", "student")))
+            {
+                users.Add(new Dictionary<string, object>
+                {
+                    { "id", NextId(users) },
+                    { "username", "student" },
+                    { "passwordHash", Sha256Hex("student123") },
+                    { "role", "student" },
+                    { "displayName", "طالب تجريبي" },
+                    { "lang", "ar" },
+                    { "createdAt", DateTime.UtcNow.ToString("O") }
+                });
+                WriteTable(context, "users", users);
+            }
         }
     }
 
